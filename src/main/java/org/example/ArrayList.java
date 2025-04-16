@@ -73,7 +73,7 @@ public class ArrayList<T>{
 
     /**
      *
-     * Проверка индекса на валидность
+     * Проверка индекса на выход за рамки
      */
     private void checkIndex(int index) {
         if (index < 0 || index >= size) {

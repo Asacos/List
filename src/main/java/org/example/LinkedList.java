@@ -47,7 +47,7 @@ public class LinkedList<T> {
      * Новая нода становится предыдущей для текущей и следующей для предыдущей
      */
     public void add(int index, T data) {
-        checkElementIndex(index);
+        checkIndex(index);
         Node<T> newNode = new Node<>(data);
 
         if (index == size) {
@@ -75,7 +75,7 @@ public class LinkedList<T> {
      * Получение элемента по индексу
      */
     public T get(int index) {
-        checkElementIndex(index);
+        checkIndex(index);
         return getNode(index).data;
     }
 
@@ -84,7 +84,7 @@ public class LinkedList<T> {
      * Изменение элемента по индексу
      */
     public void set(int index, T data) {
-        checkElementIndex(index);
+        checkIndex(index);
         getNode(index).data = data;
     }
 
@@ -93,7 +93,7 @@ public class LinkedList<T> {
      * Удаление элемента по индексу
      */
     public void remove(int index) {
-        checkElementIndex(index);
+        checkIndex(index);
         Node<T> current = getNode(index);
 
         if (current.prev != null) {
@@ -139,9 +139,9 @@ public class LinkedList<T> {
 
     /**
      *
-     * Проверка индекса за выход за рамки
+     * Проверка индекса на выход за рамки
      */
-    private void checkElementIndex(int index) {
+    private void checkIndex(int index) {
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException("Index out of bounds: " + index);
     }
