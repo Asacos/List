@@ -5,7 +5,7 @@ package org.example;
 public class Main {
     public static void main(String[] args) {
         System.out.println("ArrayList");
-        ArrayList list = new ArrayList();
+        ArrayList<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(2);
         list.add(3);
@@ -17,7 +17,7 @@ public class Main {
         list.set(1, 4);
         System.out.println(list.get(1));
         System.out.println("LinkedList");
-        LinkedList list1 = new LinkedList();
+        LinkedList<Integer> list1 = new LinkedList<>();
         list1.add(1);
         list1.add(2);
         list1.add(3);
