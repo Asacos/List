@@ -1,111 +1,149 @@
 package org.example;
 
-import com.sun.jdi.ObjectReference;
-
-public class LinkedList {
+public class LinkedList<T> {
     /**
-     *
-     * Создание элемента списка
+     * Внутренний класс для нодов(узлов)
      */
     private static class Node<T> {
         T data;
+        Node<T> prev;
         Node<T> next;
 
         Node(T data) {
             this.data = data;
-            this.next = null;
         }
     }
 
-    private Node<Object> head;
+    private Node<T> head;
+    private Node<T> tail;
     private int size;
 
     public LinkedList() {
         head = null;
+        tail = null;
         size = 0;
     }
 
     /**
      *
-     * Добавление нового элемента в конец
-     * Если head == null - head'ом становится текущий элемент
-     * Иначе текущий элемент становится следующим за последним
+     * Добавление элемента в конец списка
+     * Если список пуст, нода становится головой и хвостом
      */
-    public void add(Object data) {
-        Node<Object> newNode = new Node<>(data);
-        if (head == null) {
-            head = newNode;
+    public void add(T data) {
+        Node<T> newNode = new Node<>(data);
+        if (tail == null) {
+            head = tail = newNode;
         } else {
-            Node<Object> current = head;
-            while (current.next != null) {
-                current = current.next;
-            }
-            current.next = newNode;
+            newNode.prev = tail;
+            tail.next = newNode;
+            tail = newNode;
         }
         size++;
     }
 
     /**
      *
-     * Если элемент является первым, head'ом становится следующий элемент
-     * Иначе элементом по индексу становится следующий элемент
+     * Добавление элемента по индексу
+     * Новая нода становится предыдущей для текущей и следующей для предыдущей
      */
-    public void remove(int index) {
-        if (index == 0) {
-            head = head.next;
+    public void add(int index, T data) {
+        checkElementIndex(index);
+        Node<T> newNode = new Node<>(data);
+
+        if (index == size) {
+            add(data);
+        } else if (index == 0) {
+            newNode.next = head;
+            head.prev = newNode;
+            head = newNode;
+            size++;
         } else {
-            Node<Object> prev = getNode(index - 1);
-            prev.next = prev.next.next;
+            Node<T> current = getNode(index);
+            Node<T> prevNode = current.prev;
+
+            newNode.prev = prevNode;
+            newNode.next = current;
+
+            prevNode.next = newNode;
+            current.prev = newNode;
+            size++;
         }
-        size--;
-    }
-
-    /**
-     *
-     * Получение данных из элемента по индексу
-     */
-
-    public Object get(int index) {
-        return getNode(index).data;
-    }
-
-    /**
-     *
-     * Установка нового значения в элемент по индексу
-     */
-    public void set(int index, Object data) {
-        getNode(index).data = data;
-    }
-
-    /**
-     *
-     * Установка в current первого элемента и последовательное добавление элементов до последнего в новый список
-     */
-    public LinkedList subList(int fromIndex, int toIndex) {
-        LinkedList subList = new LinkedList();
-        Node<Object> current = getNode(fromIndex);
-        for (int i = fromIndex; i < toIndex; i++) {
-            subList.add(current);
-            current = current.next;
-        }
-        return subList;
-    }
-
-    public int size() {
-        return size;
     }
 
     /**
      *
      * Получение элемента по индексу
      */
+    public T get(int index) {
+        checkElementIndex(index);
+        return getNode(index).data;
+    }
 
-    private Node<Object> getNode(int index) {
-        Node<Object> current = head;
-        for (int i = 0; i < index; i++) {
-            current = current.next;
+    /**
+     *
+     * Изменение элемента по индексу
+     */
+    public void set(int index, T data) {
+        checkElementIndex(index);
+        getNode(index).data = data;
+    }
+
+    /**
+     *
+     * Удаление элемента по индексу
+     */
+    public void remove(int index) {
+        checkElementIndex(index);
+        Node<T> current = getNode(index);
+
+        if (current.prev != null) {
+            current.prev.next = current.next;
+        } else {
+            head = current.next;
+        }
+
+        if (current.next != null) {
+            current.next.prev = current.prev;
+        } else {
+            tail = current.prev;
+        }
+
+        size--;
+    }
+
+    /**
+     *
+     * Получение размера списка
+     */
+    public int size() {
+        return size;
+    }
+
+    /**
+     *
+     * Получение ноды по индексу
+     * Данный алгоритм оптимизирован на поиск с головы или хвоста (в зависимости от того, откуда ближе)
+     */
+    private Node<T> getNode(int index) {
+        Node<T> current;
+
+        if (index < size / 2) {
+            current = head;
+            for (int i = 0; i < index; i++) current = current.next;
+        } else {
+            current = tail;
+            for (int i = size - 1; i > index; i--) current = current.prev;
         }
         return current;
     }
-}
 
+    /**
+     *
+     * Проверка индекса за выход за рамки
+     */
+    private void checkElementIndex(int index) {
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+    }
+
+}

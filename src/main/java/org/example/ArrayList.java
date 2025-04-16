@@ -1,6 +1,6 @@
 package org.example;
 
-public class ArrayList{
+public class ArrayList<T>{
     private Object[] data;
     private int size;
     private int capacity = 10;
@@ -8,6 +8,53 @@ public class ArrayList{
     public ArrayList() {
         data = new Object[capacity];
         size = 0;
+    }
+
+    /**
+     *
+     * Расширение при заполненности и добавление элемента следующим по списку
+     */
+    public void add(T t) {
+        expand();
+        data[size++] = t;
+    }
+
+    /**
+     *
+     * Смещение после индекса для удаления
+     */
+    public void remove(int index) {
+        checkIndex(index);
+        for (int i = index; i < (size - 1); i++) {
+            data[i] = data[i + 1];
+        }
+        data[--size] = null;
+    }
+
+    /**
+     *
+     * Получение элемента по индексу
+     */
+    public T get(int index) {
+        checkIndex(index);
+        return (T) data[index];
+    }
+
+    /**
+     *
+     * Изменение элемента по индексу
+     */
+    public void set(int index, T t) {
+        checkIndex(index);
+        data[index] = t;
+    }
+
+    /**
+     *
+     * Получение количества элементов
+     */
+    public int size() {
+        return size;
     }
 
     /**
@@ -24,43 +71,13 @@ public class ArrayList{
         }
     }
 
-    public void add(Object o) {
-        expand();
-        data[size++] = o;
-    }
-
     /**
      *
-     * Смещение после индекса для удаления
+     * Проверка индекса на валидность
      */
-    public void remove(int index) {
-        for (int i = index; i < (size - 1); i++) {
-            data[i] = data[i + 1];
+    private void checkIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
-        data[--size] = null;
-    }
-
-    public Object get(int index) {
-        return data[index];
-    }
-
-    public void set(int index, Object o) {
-        data[index] = o;
-    }
-
-    /**
-     *
-     * Присвоение новому массиву значений от start до end старого массива
-     */
-    public Object[] subList(int start, int end) {
-        Object[] data1 = new Object[end - start];
-        for (int i = start; i < end; i++) {
-            data1[i] = data[i];
-        }
-        return data1;
-    }
-
-    public int size() {
-        return size;
     }
 }
